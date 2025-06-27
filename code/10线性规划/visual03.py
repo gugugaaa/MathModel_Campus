@@ -162,7 +162,7 @@ def visualize_results(csv_path):
 
 if __name__ == '__main__':
     # --- 请在这里指定上一步生成的CSV文件路径 ---
-    RESULTS_CSV_PATH = r'优化含共享单车_高拥堵_均衡模式.csv'
+    RESULTS_CSV_PATH = r'data\10线性规划\优化含共享单车_高拥堵_均衡模式.csv'
     # -----------------------------------------
     
     visualize_results(RESULTS_CSV_PATH)

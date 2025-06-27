@@ -323,10 +323,10 @@ if __name__ == '__main__':
     
     # 1. 指定包含道路数据的主表CSV文件路径
     # 例如: 'data/high_congestion.csv'
-    INPUT_CSV_PATH = r'data\10线性规划\03高拥堵.csv'
+    INPUT_CSV_PATH = r'data\10线性规划\01低拥堵.csv'
 
     # 2. 指定拥堵等级 ('高拥堵', '中拥堵', '低拥堵')
-    CONGESTION_SCENARIO = '高拥堵' 
+    CONGESTION_SCENARIO = '低拥堵' 
 
     # 3. 指定优化权重策略 ('安全优先', '效率优先', '环保优先', '均衡模式')
     WEIGHT_SCENARIO = '均衡模式'

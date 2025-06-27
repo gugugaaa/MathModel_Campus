@@ -39,8 +39,8 @@ def visualize_results(csv_path):
     # --- 3. 计算百分比变化并打印摘要 ---
     df['cong_pct_change'] = ((df['congestion_new'] - df['congestion_orig']) / df['congestion_orig']) * 100
     df['safety_pct_change'] = ((df['safety_new'] - df['safety_orig']) / df['safety_orig']) * 100
-    df['co2_pct_change'] = ((df['co2_new'] - df['co2_orig']) / df['co2_orig']) * 100 - 5
-    df['passenger_pct_change'] = ((df['passengers_new'] - df['passengers_orig']) / df['passengers_orig']) * 100 + 1.8
+    df['co2_pct_change'] = ((df['co2_new'] - df['co2_orig']) / df['co2_orig']) * 100
+    df['passenger_pct_change'] = ((df['passengers_new'] - df['passengers_orig']) / df['passengers_orig']) * 100
     df['electric_pct_change'] = ((df['optimal_ebike_count'] - df['ebike_count_orig']) / df['ebike_count_orig']) * 100
     # 新增共享单车数量变化（相对于优化前电动车总量）
     total_ebike_orig = df['ebike_count_orig'].sum()
@@ -162,7 +162,7 @@ def visualize_results(csv_path):
 
 if __name__ == '__main__':
     # --- 请在这里指定上一步生成的CSV文件路径 ---
-    RESULTS_CSV_PATH = r'优化含共享单车_高拥堵_均衡模式.csv'
+    RESULTS_CSV_PATH = r'data\11fake\优化_高拥堵.csv'
     # -----------------------------------------
     
     visualize_results(RESULTS_CSV_PATH)
