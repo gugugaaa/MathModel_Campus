@@ -10,7 +10,7 @@ EF_car_petrol = 0.131  # kg CO₂ / 车·km（汽油车）
 ratio_petrol  = 0.754  # 小汽车中汽油车占比
 EF_car_elec   = 0.074  # kg CO₂ / 车·km（电动小汽车）
 ratio_elec    = 0.246  # 小汽车中电动占比
-EF_ebike      = 0.0066 # kg CO₂ / 车·km（电动自行车）
+EF_ebike      = 0.001 # kg CO₂ / 车·km（电动自行车）
 EF_bus        = 0.44   # kg CO₂ / 车·km（深圳公交为纯电）
 
 def calculate_co2_emission():

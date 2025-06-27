@@ -7,7 +7,7 @@ output_file = r'data\04早晚高峰_with_passenger_throughput.csv'
 
 # 载人量计算的固定参数
 P_car_avg = 1.3    # 平均每辆小汽车载客人数
-P_ebike_avg = 1.1  # 平均每辆电动车载客人数
+P_ebike_avg = 1.05  # 平均每辆电动车载客人数
 P_bus_avg = 60     # 平均每辆公交车载客人数
 
 def calculate_passenger_throughput():

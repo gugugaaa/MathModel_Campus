@@ -1,9 +1,9 @@
 import pandas as pd
 
 # 假设原始csv路径
-input_csv = r'data\08聚类\01低拥堵.csv'
+input_csv = r'data\08聚类\03高拥堵.csv'
 # 输出新csv路径
-output_csv = r'data\10线性规划\01低拥堵.csv'
+output_csv = r'data\10线性规划\03高拥堵.csv'
 
 # 需要保留的字段
 columns_to_keep = [

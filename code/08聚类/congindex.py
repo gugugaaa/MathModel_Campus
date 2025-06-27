@@ -115,8 +115,14 @@ def analyze_traffic_congestion(filename):
         # 9. 保存分类后的数据文件
         print(f"\n正在保存聚类结果文件...")
         
+        # 修改导出文件名
+        cluster_file_map = {
+            '低拥堵': r'data\08聚类\01低拥堵.csv',
+            '中拥堵': r'data\08聚类\02中拥堵.csv',
+            '高拥堵': r'data\08聚类\03高拥堵.csv'
+        }
         for cluster_name, cluster_df in clustered_data.items():
-            output_filename = f"{cluster_name}_路段数据.csv"
+            output_filename = cluster_file_map[cluster_name]
             cluster_df.to_csv(output_filename, index=False, encoding='utf-8-sig')
             print(f"- 已保存: {output_filename} ({len(cluster_df)} 条记录)")
         
