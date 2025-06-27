@@ -59,8 +59,8 @@ def create_focused_dashboard(df):
     """
     
     # 创建一个 2x2 的图纸(figure)和子图(axes)
-    fig, axes = plt.subplots(2, 2, figsize=(18, 14))
-    fig.suptitle('城市交通载人量核心分析仪表板', fontsize=20, fontweight='bold')
+    fig, axes = plt.subplots(2, 2, figsize=(14, 8))
+    fig.suptitle('城市交通载人量核心分析', fontsize=20, fontweight='bold')
 
     # --- 图1: 载人量时间变化趋势 (折线图) ---
     # 目的：展示一天内不同类型道路的载人量高峰和低谷。

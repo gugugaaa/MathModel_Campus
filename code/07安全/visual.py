@@ -58,7 +58,7 @@ road_type_map = {
 df['road_type_name'] = df['road_type_code'].map(road_type_map)
 
 # 创建可视化
-plt.figure(figsize=(16, 12))
+plt.figure(figsize=(12, 9))
 
 # 1. 不同道路类型的安全指数箱线图
 plt.subplot(2, 3, 1)

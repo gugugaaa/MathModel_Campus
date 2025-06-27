@@ -103,7 +103,7 @@ def plot_pcr_results(y_true, y_pred, r2, expression, n_components):
         expression (str): 回归方程字符串。
         n_components (int): 使用的主成分数量。
     """
-    plt.figure(figsize=(8, 6))
+    plt.figure(figsize=(5, 5))
     plt.scatter(y_true, y_pred, alpha=0.7, edgecolors='k', label='预测值 vs 实际值')
     
     # 添加理想预测（y=x）参考线

@@ -43,25 +43,34 @@ def create_pca_biplot(df):
     
     # 绘制变量向量
     texts = []
+    text_positions = []  # 记录文本位置避免重叠
     for i, var in enumerate(numeric_columns):
-        # 为特殊变量设置颜色
+        # 配色方案调整
         if var == 'passenger_throughput':
             color = 'red'
             linewidth = 3
             alpha = 0.9
-        elif var in ['bus_count', 'traffic_flow_vph', 'pedestrian_count']:
-            color = 'orange'
+        elif var in ['traffic_flow_vph', 'traffic_density_vpkm', 'congestion_index', 'avg_speed_kph']:
+            color = 'gold'
             linewidth = 2.5
             alpha = 0.8
-        elif var in ['car_count', 'ebike_count']:
-            color = 'green'
+        elif var == 'ebike_count':
+            color = 'royalblue'
             linewidth = 2
             alpha = 0.7
-        else:
-            color = 'darkblue'
+        elif var in ['car_count', 'bus_count', 'pedestrian_count']:
+            color = 'forestgreen'
+            linewidth = 2
+            alpha = 0.7
+        elif var == 'road_length_km':
+            color = 'gray'
             linewidth = 1.5
             alpha = 0.6
-        
+        else:
+            color = 'gray'
+            linewidth = 1.5
+            alpha = 0.6
+
         # 绘制箭头
         ax.arrow(0, 0, loadings[i, 0], loadings[i, 1], 
                 head_width=0.03, head_length=0.03, 
@@ -80,16 +89,33 @@ def create_pca_biplot(df):
             'congestion_index': '拥堵指数',
             'passenger_throughput': '载人量'
         }
-        
-        # 添加变量标签
-        text = ax.text(loadings[i, 0]*1.1, loadings[i, 1]*1.1, 
-                      var_names[var], fontsize=10, 
-                      color=color, 
-                      fontweight='bold' if var in ['passenger_throughput', 'bus_count', 'traffic_flow_vph', 'pedestrian_count'] else 'normal')
+
+        # 计算文本位置，避免重叠
+        base_x = loadings[i, 0] * 1.2
+        base_y = loadings[i, 1] * 1.2
+        text_x, text_y = base_x, base_y
+        for pos_x, pos_y in text_positions:
+            distance = np.sqrt((text_x - pos_x)**2 + (text_y - pos_y)**2)
+            if distance < 0.3:
+                offset_x = 0.15 if base_x > 0 else -0.15
+                offset_y = 0.15 if base_y > 0 else -0.15
+                text_x = base_x + offset_x
+                text_y = base_y + offset_y
+        text_positions.append((text_x, text_y))
+
+        fontweight = 'bold' if var == 'passenger_throughput' else 'normal'
+        bbox_props = dict(
+            boxstyle="round,pad=0.3",
+            facecolor='white',
+            edgecolor=color,
+            linewidth=1.5,
+            alpha=0.9
+        )
+        text = ax.text(text_x, text_y, var_names[var],
+                       fontsize=11, color=color, fontweight=fontweight,
+                       ha='center', va='center',
+                       bbox=bbox_props)
         texts.append(text)
-    
-    # 调整文本位置避免重叠
-    adjust_text(texts, ax=ax, arrowprops=dict(arrowstyle='->', color='gray', alpha=0.5))
     
     # 设置坐标轴标签
     ax.set_xlabel(f'第一主成分 (解释方差: {pca.explained_variance_ratio_[0]:.2%})')
@@ -110,9 +136,10 @@ def create_pca_biplot(df):
     from matplotlib.lines import Line2D
     legend_elements = [
         Line2D([0], [0], color='red', lw=3, label='载人量'),
-        Line2D([0], [0], color='orange', lw=2.5, label='载人相关变量'),
-        Line2D([0], [0], color='green', lw=2, label='车辆数量'),
-        Line2D([0], [0], color='darkblue', lw=1.5, label='其他变量')
+        Line2D([0], [0], color='gold', lw=2.5, label='其他交通指标'),
+        Line2D([0], [0], color='forestgreen', lw=2, label='其他车辆类型'),
+        Line2D([0], [0], color='royalblue', lw=2, label='电动车'),
+        Line2D([0], [0], color='gray', lw=1.5, label='其他道路参数')
     ]
     ax.legend(handles=legend_elements, loc='upper right')
     

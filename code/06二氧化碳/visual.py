@@ -56,7 +56,7 @@ def visualize_co2_by_road_type_and_time(df):
     按道路类型和时间段可视化二氧化碳排放量
     """
     # 创建子图
-    fig, axes = plt.subplots(2, 2, figsize=(15, 12))
+    fig, axes = plt.subplots(2, 2, figsize=(10, 8))
     fig.suptitle('不同道路类型在各时间段的二氧化碳排放量分析', fontsize=16, fontweight='bold')
     
     # 1. 按时间段和道路类型的总排放量
@@ -73,7 +73,7 @@ def visualize_co2_by_road_type_and_time(df):
     ax2 = axes[0, 1]
     pivot_data = df.pivot_table(values='co2_emission', index='road_type_name', 
                                columns='time_slot_30min', aggfunc='sum', fill_value=0)
-    sns.heatmap(pivot_data, annot=True, fmt='.0f', cmap='YlOrRd', ax=ax2)
+    sns.heatmap(pivot_data, annot=False, fmt='.0f', cmap='YlOrRd', ax=ax2)
     ax2.set_title('道路类型-时间段二氧化碳排放热力图')
     ax2.set_xlabel('时间段')
     ax2.set_ylabel('道路类型')

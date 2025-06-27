@@ -3,7 +3,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
-from adjustText import adjust_text
 import seaborn as sns
 
 # 设置中文字体
@@ -43,26 +42,24 @@ def create_pca_biplot(df):
     
     # 绘制变量向量
     texts = []
+    text_positions = []  # 记录文本位置避免重叠
+    
     for i, var in enumerate(numeric_columns):
-        # 重新设计配色方案 - 突出核心研究变量
+        # 重新设计配色方案 - 红-黄-绿-蓝
         if var == 'congestion_index':
-            color = '#FF4500'  # 橙红色 - 拥堵指数（核心目标变量）
+            color = '#FF0000'  # 红色 - 拥堵指数
             linewidth = 3.0
             alpha = 0.9
         elif var == 'ebike_count':
-            color = '#1E90FF'  # 道奇蓝 - 电动车数量（核心研究变量）
+            color = '#0066FF'  # 蓝色 - 电动车数量
             linewidth = 3.0
             alpha = 0.9
         elif var in ['avg_speed_kph', 'traffic_flow_vph', 'traffic_density_vpkm']:
-            color = '#DC143C'  # 深红色 - 交通性能指标
+            color = '#FFD700'  # 金黄色 - 交通性能指标
             linewidth = 2.0
             alpha = 0.8
-        elif var in ['car_count', 'bus_count']:
-            color = '#8A2BE2'  # 蓝紫色 - 机动车辆
-            linewidth = 2.0
-            alpha = 0.7
-        elif var == 'pedestrian_count':
-            color = '#228B22'  # 森林绿 - 行人（非机动）
+        elif var in ['car_count', 'bus_count', 'pedestrian_count']:
+            color = '#228B22'  # 森林绿 - 车辆类型
             linewidth = 2.0
             alpha = 0.7
         else:  # road_length_km
@@ -88,15 +85,40 @@ def create_pca_biplot(df):
             'congestion_index': '拥堵指数'
         }
         
-        # 添加变量标签
+        # 计算文本位置，避免重叠
+        base_x = loadings[i, 0] * 1.2
+        base_y = loadings[i, 1] * 1.2
+        
+        # 检查与已有文本的距离，调整位置
+        text_x, text_y = base_x, base_y
+        for pos_x, pos_y in text_positions:
+            distance = np.sqrt((text_x - pos_x)**2 + (text_y - pos_y)**2)
+            if distance < 0.3:  # 如果距离太近，调整位置
+                # 根据象限调整偏移方向
+                offset_x = 0.15 if base_x > 0 else -0.15
+                offset_y = 0.15 if base_y > 0 else -0.15
+                text_x = base_x + offset_x
+                text_y = base_y + offset_y
+        
+        text_positions.append((text_x, text_y))
+        
+        # 添加带卡片背景的变量标签
         fontweight = 'bold' if var in ['congestion_index', 'ebike_count'] else 'normal'
-        text = ax.text(loadings[i, 0]*1.1, loadings[i, 1]*1.1, 
-                      var_names[var], fontsize=10, 
-                      color=color, fontweight=fontweight)
+        
+        # 创建卡片样式的文本框
+        bbox_props = dict(
+            boxstyle="round,pad=0.3",
+            facecolor='white',
+            edgecolor=color,
+            linewidth=1.5,
+            alpha=0.9
+        )
+        
+        text = ax.text(text_x, text_y, var_names[var], 
+                      fontsize=11, color=color, fontweight=fontweight,
+                      ha='center', va='center',
+                      bbox=bbox_props)
         texts.append(text)
-    
-    # 调整文本位置避免重叠
-    adjust_text(texts, ax=ax, arrowprops=dict(arrowstyle='->', color='gray', alpha=0.5))
     
     # 设置坐标轴标签
     ax.set_xlabel(f'第一主成分 (解释方差: {pca.explained_variance_ratio_[0]:.2%})')
@@ -116,11 +138,10 @@ def create_pca_biplot(df):
     # 添加图例
     from matplotlib.lines import Line2D
     legend_elements = [
-        Line2D([0], [0], color='#FF4500', lw=3, label='拥堵指数（目标变量）'),
-        Line2D([0], [0], color='#1E90FF', lw=3, label='电动车数量（研究变量）'),
-        Line2D([0], [0], color='#DC143C', lw=2, label='交通性能指标'),
-        Line2D([0], [0], color='#8A2BE2', lw=2, label='机动车辆'),
-        Line2D([0], [0], color='#228B22', lw=2, label='行人'),
+        Line2D([0], [0], color='#FF0000', lw=3, label='拥堵指数'),
+        Line2D([0], [0], color='#0066FF', lw=3, label='电动车数量'),
+        Line2D([0], [0], color='#FFD700', lw=2, label='交通性能指标'),
+        Line2D([0], [0], color='#228B22', lw=2, label='车辆类型'),
         Line2D([0], [0], color='#696969', lw=1.8, label='基础设施')
     ]
     ax.legend(handles=legend_elements, loc='upper right', fontsize=9)
@@ -180,6 +201,11 @@ if __name__ == "__main__":
     ]
     loadings_df = analyze_pca_results(pca, numeric_columns)
 
+    # 显示图形
+    plt.show()
+
+    # 保存图片
+    # fig.savefig('pca_biplot.png', dpi=300, bbox_inches='tight')
     # 显示图形
     plt.show()
 
