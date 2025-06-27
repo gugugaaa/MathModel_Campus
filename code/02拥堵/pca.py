@@ -44,18 +44,30 @@ def create_pca_biplot(df):
     # 绘制变量向量
     texts = []
     for i, var in enumerate(numeric_columns):
-        # 为特殊变量设置颜色
-        if var in ['congestion_index', 'traffic_flow_vph', 'avg_speed_kph', 'traffic_density_vpkm']:
-            color = 'red'
-            linewidth = 2.5
-            alpha = 0.8
+        # 重新设计配色方案 - 突出核心研究变量
+        if var == 'congestion_index':
+            color = '#FF4500'  # 橙红色 - 拥堵指数（核心目标变量）
+            linewidth = 3.0
+            alpha = 0.9
         elif var == 'ebike_count':
-            color = 'orange'
-            linewidth = 2.5
+            color = '#1E90FF'  # 道奇蓝 - 电动车数量（核心研究变量）
+            linewidth = 3.0
+            alpha = 0.9
+        elif var in ['avg_speed_kph', 'traffic_flow_vph', 'traffic_density_vpkm']:
+            color = '#DC143C'  # 深红色 - 交通性能指标
+            linewidth = 2.0
             alpha = 0.8
-        else:
-            color = 'darkblue'
-            linewidth = 1.5
+        elif var in ['car_count', 'bus_count']:
+            color = '#8A2BE2'  # 蓝紫色 - 机动车辆
+            linewidth = 2.0
+            alpha = 0.7
+        elif var == 'pedestrian_count':
+            color = '#228B22'  # 森林绿 - 行人（非机动）
+            linewidth = 2.0
+            alpha = 0.7
+        else:  # road_length_km
+            color = '#696969'  # 暗灰色 - 基础设施
+            linewidth = 1.8
             alpha = 0.6
         
         # 绘制箭头
@@ -77,9 +89,10 @@ def create_pca_biplot(df):
         }
         
         # 添加变量标签
+        fontweight = 'bold' if var in ['congestion_index', 'ebike_count'] else 'normal'
         text = ax.text(loadings[i, 0]*1.1, loadings[i, 1]*1.1, 
                       var_names[var], fontsize=10, 
-                      color=color, fontweight='bold' if var in ['congestion_index', 'ebike_count', 'traffic_flow_vph', 'avg_speed_kph', 'traffic_density_vpkm'] else 'normal')
+                      color=color, fontweight=fontweight)
         texts.append(text)
     
     # 调整文本位置避免重叠
@@ -103,11 +116,14 @@ def create_pca_biplot(df):
     # 添加图例
     from matplotlib.lines import Line2D
     legend_elements = [
-        Line2D([0], [0], color='red', lw=2, label='拥堵指数/流量/速度/密度'),
-        Line2D([0], [0], color='orange', lw=2, label='电动车数量'),
-        Line2D([0], [0], color='darkblue', lw=1.5, label='其他变量')
+        Line2D([0], [0], color='#FF4500', lw=3, label='拥堵指数（目标变量）'),
+        Line2D([0], [0], color='#1E90FF', lw=3, label='电动车数量（研究变量）'),
+        Line2D([0], [0], color='#DC143C', lw=2, label='交通性能指标'),
+        Line2D([0], [0], color='#8A2BE2', lw=2, label='机动车辆'),
+        Line2D([0], [0], color='#228B22', lw=2, label='行人'),
+        Line2D([0], [0], color='#696969', lw=1.8, label='基础设施')
     ]
-    ax.legend(handles=legend_elements, loc='upper right')
+    ax.legend(handles=legend_elements, loc='upper right', fontsize=9)
     
     plt.tight_layout()
     return fig, ax, pca
